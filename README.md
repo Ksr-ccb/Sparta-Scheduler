@@ -47,6 +47,8 @@
 1차본이라 수정될 수 있음.
 ![image](https://github.com/user-attachments/assets/ed983ad1-cbeb-4124-8208-f3243cb65530)
 
+## ERD 
+![](https://velog.velcdn.com/images/tofha054/post/e9ed1b68-21a2-4490-bb0d-d8af889ade16/image.png)
 
 
 ## 초기 구조도
