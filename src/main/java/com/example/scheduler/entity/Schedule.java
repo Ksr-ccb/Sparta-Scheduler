@@ -15,16 +15,18 @@ public class Schedule {
     private String password;
 
     private Long userId;
-    private String userName;
 
-    private String updateDate;
-    private String createDate;
+    private LocalDateTime updateDate;
+    private LocalDateTime createDate;
 
-    public Schedule(String thingTodo, String password, String userName){
+    public Schedule(
+            Long scheduleId, String thingTodo, Long userId){
+//            LocalDateTime updateDate, LocalDateTime createDate
+        this.scheduleId = scheduleId;
         this.thingTodo = thingTodo;
-        this.password = password;
-        this.userName = userName;
+        this.userId = userId;
+//        this.updateDate = updateDate;
+//        this.createDate = createDate;
 
-        this.updateDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
+   }
 }

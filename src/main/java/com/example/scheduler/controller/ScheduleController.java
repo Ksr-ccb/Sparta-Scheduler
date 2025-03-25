@@ -1,8 +1,8 @@
 package com.example.scheduler.controller;
 
-import com.example.scheduler.dto.ScheduleRequestDto;
-import com.example.scheduler.dto.ScheduleResponseDto;
-import com.example.scheduler.service.ScheduleService;
+import com.example.scheduler.dto.scheduleDto.ScheduleRequestDto;
+import com.example.scheduler.dto.scheduleDto.ScheduleResponseDto;
+import com.example.scheduler.service.scheduleServ.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +45,8 @@ public class ScheduleController {
      * 특정 조건에 맞는 데이터 모두를 불러옵니다.
      * 조건에 대한 설정 여부는 선택적입니다. ( OO / OX / XO/ XX 가능)
      * 만약 아무 조건없이 실행한다면 모든 ROWS를 불러옵니다.
-     * @param userName
-     * @param updateDate
+     * @param userName 알고싶은 작성자의 이름
+     * @param updateDate 최종 수정한 날짜가 맞으면 출력
      * @return
      */
     @GetMapping
@@ -67,22 +67,22 @@ public class ScheduleController {
             @PathVariable Long scheduleId){
         return new ResponseEntity<>(scheduleService.findScheduleById(scheduleId), HttpStatus.OK);
     }
-
-    /**
-     * 아이디 값에 맞는 스케줄 row의 내용을 수정하는 함수입니다.
-     * 수정할 수 있는 내용은 한정적입니다. 일정의 내용(thingTodo)과 작성자명(userName)만 유효한 수정값으로 받아들입니다.
-     * 수정이 정상적으로 완료되면 수정날짜가 자동으로 갱신됩니다.
-     * @param scheduleId
-     * @param dto
-     * @return
-     */
-    @PutMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleResponseDto> updateSchedule(
-            @PathVariable Long scheduleId, @RequestBody ScheduleRequestDto dto){
-        return new ResponseEntity<>(scheduleService.updateSchedule(scheduleId, dto), HttpStatus.OK);
-    }
-
-
+//
+//    /**
+//     * 아이디 값에 맞는 스케줄 row의 내용을 수정하는 함수입니다.
+//     * 수정할 수 있는 내용은 한정적입니다. 일정의 내용(thingTodo)과 작성자명(userName)만 유효한 수정값으로 받아들입니다.
+//     * 수정이 정상적으로 완료되면 수정날짜가 자동으로 갱신됩니다.
+//     * @param scheduleId
+//     * @param dto
+//     * @return
+//     */
+//    @PutMapping("/{scheduleId}")
+//    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+//            @PathVariable Long scheduleId, @RequestBody ScheduleRequestDto dto){
+//        return new ResponseEntity<>(scheduleService.updateSchedule(scheduleId, dto), HttpStatus.OK);
+//    }
+//
+//
     /**
      * 아이디 값에 맞는 스케줄 row의 내용을 삭제하는 함수입니다.
      * 삭제를 위해서 스케줄 row에 맞는 비밀번호를 입력받아야합니다.

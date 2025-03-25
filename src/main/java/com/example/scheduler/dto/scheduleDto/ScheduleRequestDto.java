@@ -1,4 +1,4 @@
-package com.example.scheduler.dto;
+package com.example.scheduler.dto.scheduleDto;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ public class ScheduleRequestDto {
 
     private String thingTodo;
 
-    private String userName;
+    private Long userId;
 
     private String password;
 
