@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,7 +99,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * 만약 결과로 나온 row가 하나도없다면 NOT_FOUND 를 반환합니다.
      */
     @Override
-    public List<ScheduleResponseDto> findAllSchedules(String userName, LocalDateTime updateDate) {
+    public List<ScheduleResponseDto> findAllSchedules(String userName, LocalDate updateDate) {
         String sql = "SELECT SCHEDULE_ID, SCHEDULE_CONTENT, USER_NAME, CREATE_DATE, S.UPDATE_DATE " +
                 "FROM SCHEDULE AS S " +
                 "JOIN USER AS U " +
@@ -117,7 +118,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             }
         }else {//이름X, 날짜 O/X
             if(updateDate != null){
-                sql += "WHERE DATE_FORMAT(UPDATE_DATE,'%Y-%m-%d') = ? ";
+                sql += "WHERE DATE(S.UPDATE_DATE) = ? ";
                 parameters.add(updateDate);
             }
         }
@@ -134,7 +135,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             return result;
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "불러오기 실패 : 입력값을 다시 확인해주세요.");
+                    "불러오기 실패 : 입력값을 다시 확인해주세요." + updateDate);
         }
     }
 

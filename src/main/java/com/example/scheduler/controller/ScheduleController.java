@@ -60,8 +60,8 @@ public class ScheduleController {
 
     /**
      * 아이디값에 맞는 스케줄 row 한줄을 불러오는 함수입니다.
-     * @param scheduleId
-     * @return
+     * @param scheduleId 원하는 row의 아이디 값
+     * @return row를 출력
      */
     @GetMapping("/{scheduleId}")
     public ResponseEntity<ScheduleResponseDto> findScheduleById(

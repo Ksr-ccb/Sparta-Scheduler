@@ -1,6 +1,8 @@
 package com.example.scheduler.repository.userManagementRepo;
 
+import com.example.scheduler.dto.scheduleDto.ScheduleResponseDto;
 import com.example.scheduler.dto.userManagementDto.UserResponseDto;
+import com.example.scheduler.entity.Schedule;
 import com.example.scheduler.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,6 +84,30 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
     }
 
     /**
+     * 동명이인을 포함하여 이름이 같은 사용자들을 반환합니다.
+     * @param userName 탐색대상이 되는 이름입니다.
+     * @return 이름값들의 리스트를 반환합니다.
+     */
+    @Override
+    public List<String> findUsersByName(String userName){
+        String sql = "SELECT * FROM user WHERE USER_NAME = ?";
+
+        try{
+            List<String> result = jdbcTemplate.query(sql, new String[]{userName}, namesRowMapper());
+
+            if(result.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 컬럼이 없습니다. ");
+            }
+
+            return result;
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "불러오기 실패 : 입력값을 다시 확인해주세요.");
+        }
+
+    }
+
+    /**
      * 특정 id값에 맞는 사용자 "이름"을 반환해주는 함수입니다.
      * @param id 해당 id 값은 PK 이므로 테이블에 단 하나가 존재합니다.
      * @return  id에 맞는 row가 있으면 거기서 이름값만 가져와 String 형태로 반환하고 그렇지 않으면 HttpStatus.NOT_FOUND를 반환합니다.
@@ -122,6 +149,18 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
                     rs.getString("USER_NAME"),
                     rs.getString("EMAIL")
                 );
+            }
+        };
+    }
+
+    /**
+     * 쿼리 실행문을 {@link String} 형태로 바꿔주는 함수입니다.
+     */
+    private RowMapper<String> namesRowMapper() {
+        return new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("USER_NAME");
             }
         };
     }

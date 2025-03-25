@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -69,14 +70,19 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Override
     public List<ScheduleResponseDto> finaAllSchedules(String userName, String updateDate) {
 
-        LocalDateTime date = null;
+        LocalDate date = null;
 
         if(updateDate != null){
+
+            if (!updateDate.matches("\\d{4}-\\d{2}-\\d{2}")) { // "yyyy-MM-dd" 형식에 부합하는지 확인
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이메일 형식이 아닙니다.");
+            }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             try {
-                date = LocalDateTime.parse(updateDate, formatter);
+                date = LocalDate.parse(updateDate, formatter);
             } catch (DateTimeParseException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "날짜 형식으로 바꿀 수 없습니다." + date);
             }
         }
 
