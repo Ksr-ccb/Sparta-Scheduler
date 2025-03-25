@@ -26,17 +26,17 @@ public class UserManagementServiceImpl implements UserManagementService{
         this.userManagementRepository = userManagementRepository;
     }
 
+    /**
+     * [service] 사용자 등록을 하는 함수입니다.
+     * @param userName 사용자 이름을 받습니다.
+     * @param email 사용자의 이메일 주소를 받습니다.
+     * @return 사용자 등록이 완료되면 등록된 사용자 정보를 반환합니다.
+     */
     @Override
     public UserResponseDto registerUser(String userName, String email) {
         if(userName == null || email == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There are no essential values.");
         }
         return userManagementRepository.registerUser(new User(userName,email));
-    }
-
-    @Override
-    public UserResponseDto updateUserInfo(Long userId, String userName, String email) {
-
-        return null;
     }
 }

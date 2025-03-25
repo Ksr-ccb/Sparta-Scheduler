@@ -108,19 +108,21 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         List<Object> parameters = new ArrayList<>();
 
         if(userName != null){ //이름 O, 날짜 O/X
-            sql += "WHERE USER_NAME = ?";
+            sql += "WHERE USER_NAME = ? ";
             parameters.add(userName);
 
             if(updateDate != null){
-                sql += "AND UPDATE_DATE = ?";
+                sql += "AND UPDATE_DATE = ? ";
                 parameters.add(updateDate);
             }
         }else {//이름X, 날짜 O/X
             if(updateDate != null){
-                sql += "WHERE DATE_FORMAT(UPDATE_DATE,'%Y-%m-%d') = ?";
+                sql += "WHERE DATE_FORMAT(UPDATE_DATE,'%Y-%m-%d') = ? ";
                 parameters.add(updateDate);
             }
         }
+
+        sql += "ORDER BY S.UPDATE_DATE";
 
         try{
             List<ScheduleResponseDto> result = jdbcTemplate.query(sql, parameters.toArray(), scheduleDtoRowMapper());
@@ -136,10 +138,18 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         }
     }
 
+    /**
+     * 할 일의 내용을 변경합니다.
+     * @param id 스케줄 아이디 값입니다.
+     * @param thingTodo 바꿀 할일의 내용입니다.
+     * @return 업데이트를 한 row의 수를 반환합니다.
+     */
     @Override
     public int updateSchedule(Long id, String thingTodo) {
         return jdbcTemplate.update("UPDATE SCHEDULE SET SCHEDULE_CONTENT = ? WHERE SCHEDULE_ID = ?", thingTodo, id);
     }
+
+
 
 
     /**
@@ -193,6 +203,4 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             }
         };
     }
-
-
 }

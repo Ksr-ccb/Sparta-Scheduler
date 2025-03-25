@@ -98,6 +98,12 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
         }
     }
 
+    /**
+     * [Repository] 작성자 이름을 수정하는 함수입니다.
+     * @param id 해당되는 row를 찾습니다.
+     * @param userName row의 바꿀 작성자 이름입니다.
+     * @return 업데이트된 row수를 반환합니다.
+     */
     @Override
     public int updateUserNameById(Long id, String userName) {
         return jdbcTemplate.update("UPDATE USER SET USER_NAME = ? WHERE USER_ID = ?", userName, id);

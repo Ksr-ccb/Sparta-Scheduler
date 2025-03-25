@@ -37,7 +37,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     /**
-     * 새로운 스케줄을 만드는 기능을 하는 함수입니다.
+     * [service] 새로운 스케줄을 만드는 기능을 하는 함수입니다.
      * 입력받은 dto의 값을 확인하고,
      * 조건을 만족하면 {@link Schedule}객체를 생성하고
      * scheduleRepository.saveSchedule 의 매개변수로 넘겨준다..
@@ -60,7 +60,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     /**
-     * 스케줄 리스트를 반환하는 함수입니다.
+     * [service] 스케줄 리스트를 반환하는 함수입니다.
      * @param userName 특정 작성자의 이름값(동명이인도 모두 탐색)
      * @param updateDate 최종 수정된 날짜
      * @return
@@ -82,6 +82,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     /**
+     * [service] id값에 맞는 데이터 하나를 반환하는 함수입니다.
      * 매개변수로 받은 id값이 테이블에 잇는지 확인하고
      * 있다면 해당 row만 읽어와서 MemoResponseDto으로 반환하는 함수입니다.
      * @param id 찾아야 할 id값
@@ -100,7 +101,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     /**
-     * 일정을 변경하는 함수입니다.
+     * [service]일정을 변경하는 함수입니다.
      * 먼저, 입력받은 값에서 필요한 값들이 다 있는지 확인합니다.
      * 그 다음 scheduleRepository.checkPassword을 통해 비밀번호가 맞는지 검사한 후,
      * 통과가 되면 row의 값을 update합니다.
@@ -118,7 +119,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         // 3. 둘다 NULL => BAD REQEUST
         if(updateBody.get("userName") == null && updateBody.get("thingTodo") == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "변경 값이 유효하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 할 값이 없습니다.");
         }
 
         Schedule responseSchedule = scheduleRepository.findScheduleById(id);
@@ -130,7 +131,7 @@ public class ScheduleServiceImpl implements ScheduleService{
             if( updateBody.get("thingTodo") != null){
                 updatedRow = scheduleRepository.updateSchedule(id, updateBody.get("thingTodo"));
                 if( updatedRow != 1 ){
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 row를 찾지 못했어요/");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정할 row를 찾지 못했어요/");
                 }
                 responseSchedule.setThingTodo(updateBody.get("thingTodo"));
             }
@@ -154,7 +155,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     /**
-     * 해당하는 일정을 삭제하는 함수입니다.
+     * [service]해당하는 일정을 삭제하는 함수입니다.
      * 주어진 id값과 password를 비교하고, 조건이 충족되면 해당 row를 찾아 삭제합니다.
      * @param id 삭제할 id값
      * @param password 해당 id에 있는 password랑 비교해야함. (같아야 삭제가능)

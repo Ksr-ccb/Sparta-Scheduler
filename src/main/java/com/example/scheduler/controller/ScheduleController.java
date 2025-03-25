@@ -73,8 +73,8 @@ public class ScheduleController {
      * 아이디 값에 맞는 스케줄 row의 내용을 수정하는 함수입니다.
      * 수정할 수 있는 내용은 한정적입니다. 일정의 내용(thingTodo)과 작성자명(userName)만 유효한 수정값으로 받아들입니다.
      * 수정이 정상적으로 완료되면 수정날짜가 자동으로 갱신됩니다.
-     * @param scheduleId
-     * @param updateBody
+     * @param scheduleId 수정할 스케줄의 아이디 값
+     * @param updateBody 수정에 필요한 정보들이 있는 Map << 비밀번호는 필수 입력입니다
      * @return
      */
     @PutMapping("/{scheduleId}")
