@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * HTTP 요청이 오면 가장먼저 컨트롤러에서 받습니다.
@@ -86,18 +87,18 @@ public class ScheduleController {
     /**
      * 아이디 값에 맞는 스케줄 row의 내용을 삭제하는 함수입니다.
      * 삭제를 위해서 스케줄 row에 맞는 비밀번호를 입력받아야합니다.
-     * @param scheduleId
-     * @param dto
-     * @return
+     * @param scheduleId 삭제할 스케쥴의 아이디 값 입니다.
+     * @param passwordBody json으로 password를 받아옵니다.
+     * @return 삭제 후에 되돌아가는 응답 값이 없기 때문에 성공시 NO_CONTENT를 반환합니다.
      */
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity<Void> deleteSchedule(
             @PathVariable Long scheduleId,
-            @RequestBody ScheduleRequestDto dto){
+            @RequestBody Map<String, String> passwordBody){
 
-        scheduleService.deleteSchedule(scheduleId, dto.getPassword());
+        scheduleService.deleteSchedule(scheduleId, passwordBody.get("password"));
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

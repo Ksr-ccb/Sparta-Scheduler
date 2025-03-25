@@ -27,6 +27,5 @@ public class Schedule {
         this.userId = userId;
 //        this.updateDate = updateDate;
 //        this.createDate = createDate;
-
    }
 }

@@ -150,7 +150,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      */
     @Override
     public int deleteSchedule(Long id) {
-        return jdbcTemplate.update("DELETE FROM SCHEDULE WHERE id = ?", id);
+        return jdbcTemplate.update("DELETE FROM SCHEDULE WHERE SCHEDULE_ID = ?", id);
     }
 
     /**

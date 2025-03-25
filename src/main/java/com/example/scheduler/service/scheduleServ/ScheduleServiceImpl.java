@@ -143,15 +143,15 @@ public class ScheduleServiceImpl implements ScheduleService{
         }
 
         Schedule responseSchedule = scheduleRepository.findScheduleById(id);
-        if(password.equals(responseSchedule)){
-            scheduleRepository.deleteSchedule(id);
-        }
-
         //비밀번호 꺼내서 비밀번호 확인함
+        if(password.equals(responseSchedule.getPassword())){
+            if( scheduleRepository.deleteSchedule(id) != 1){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 row를 찾지 못했어요/");
+            }
 
-        // 틀리면 BAD REQEUST
-
-        //맞으면 레포지토리 일시킴. 받아오는 것:수정한 row개수
-        //0개면 id값이 잘못되었으니 Not Found
+        }else{
+            // 틀리면 BAD REQEUST
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.");
+        }
     }
 }
