@@ -148,10 +148,6 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     public int updateSchedule(Long id, String thingTodo) {
         return jdbcTemplate.update("UPDATE SCHEDULE SET SCHEDULE_CONTENT = ? WHERE SCHEDULE_ID = ?", thingTodo, id);
     }
-
-
-
-
     /**
      * 주어진 id값에 맞는 row를 삭제하는 함수입니다.
      * @param id 는 PK 값으로 테이블에 딱 하나만 존재합니다.

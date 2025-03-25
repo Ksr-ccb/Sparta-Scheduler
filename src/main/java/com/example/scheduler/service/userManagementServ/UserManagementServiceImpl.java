@@ -37,6 +37,12 @@ public class UserManagementServiceImpl implements UserManagementService{
         if(userName == null || email == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There are no essential values.");
         }
+
+        //이메일 형식 소문자, 대문자, 숫자 _.- << 이게 1글자 이상 @ 소문자, 대문자, 숫자 1자 이상이고 .으로 끝나면 안됨.
+        if(!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email format.");
+        }
+
         return userManagementRepository.registerUser(new User(userName,email));
     }
 }

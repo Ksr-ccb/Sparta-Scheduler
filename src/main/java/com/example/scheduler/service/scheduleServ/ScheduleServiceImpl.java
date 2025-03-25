@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -72,13 +73,14 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         if(updateDate != null){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            date = LocalDateTime.parse(updateDate, formatter);
+            try {
+                date = LocalDateTime.parse(updateDate, formatter);
+            } catch (DateTimeParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid date format.");
+            }
         }
 
-
         return scheduleRepository.findAllSchedules(userName, date);
-        // scheduleRepository. finaAllSchedules 에서 유효값에 따라서 쿼리문 다르게 적용해줘야 함.
-        //return List.of();
     }
 
     /**
