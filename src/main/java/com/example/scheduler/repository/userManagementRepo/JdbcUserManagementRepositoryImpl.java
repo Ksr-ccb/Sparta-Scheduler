@@ -98,6 +98,11 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
         }
     }
 
+    @Override
+    public int updateUserNameById(Long id, String userName) {
+        return jdbcTemplate.update("UPDATE USER SET USER_NAME = ? WHERE USER_ID = ?", userName, id);
+    }
+
     /**
      * 쿼리 실행문을 {@link User} 형태로 바꿔주는 함수입니다.
      * @return 각 row에 col과 `User` 의 변수를 서로 매핑하여 순서대로 저장합니다.

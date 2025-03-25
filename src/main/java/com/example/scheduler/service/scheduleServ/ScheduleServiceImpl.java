@@ -2,6 +2,7 @@ package com.example.scheduler.service.scheduleServ;
 
 import com.example.scheduler.dto.scheduleDto.ScheduleResponseDto;
 import com.example.scheduler.dto.scheduleDto.ScheduleRequestDto;
+import com.example.scheduler.dto.scheduleDto.ScheduleUpdateRequestDto;
 import com.example.scheduler.entity.Schedule;
 import com.example.scheduler.repository.scheduleRepo.ScheduleRepository;
 import com.example.scheduler.repository.userManagementRepo.UserManagementRepository;
@@ -57,6 +58,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         return responseDto;
     }
+
     /**
      * 스케줄 리스트를 반환하는 함수입니다.
      * @param userName 특정 작성자의 이름값(동명이인도 모두 탐색)
@@ -97,38 +99,58 @@ public class ScheduleServiceImpl implements ScheduleService{
         return responseDto;
     }
 
-//    /**
-//     * 일정을 변경하는 함수입니다.
-//     * 먼저, 입력받은 값에서 필요한 값들이 다 있는지 확인합니다.
-//     * 그 다음 scheduleRepository.checkPassword을 통해 비밀번호가 맞는지 검사한 후,
-//     * 통과가 되면 row의 값을 update합니다.
-//     * @param id 수정할 id값
-//     * @param dto
-//     * @return
-//     */
-//    @Transactional
-//    @Override
-//    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
-//        //들어온 requestBody가 정상적인 형태가 맞는지 확인
-//        // 0. 비밀번호가 NULL => BAD REQEUST
-//        // 1. 내용이 NULL + 작성자 이름 바뀜 => 작성자, 업데이트 날짜만 수정
-//        // 2. 내용이 바뀜 + 작성자 NULL => 내용, 업데이트 날짜만 수정
-//        // 3. 둘 다 바뀜 => 내용, 작성자, 업데이트 날짜 수정
-//        // 3. 둘다 NULL => BAD REQEUST
-//        // 아니면 BAD REQUEST
-//
-//        //다 있으면 비밀번호 꺼내서 비밀번호 확인함
-//
-//        // 틀리면 BAD REQEUST
-//
-//        //맞으면 레포지토리 일시킴. 받아오는 것:수정한 row개수
-//        //0개면 id값이 잘못되었으니 Not Found
-//        // 수정한 후에 , 수정된 값을 scheduleRepository.findScheduleById(id)으로 받아와서 스케줄 객체만듬
-//
-//        //return new ScheduleResponseDto(schedule);
-//        return null;
-//    }
-//
+    /**
+     * 일정을 변경하는 함수입니다.
+     * 먼저, 입력받은 값에서 필요한 값들이 다 있는지 확인합니다.
+     * 그 다음 scheduleRepository.checkPassword을 통해 비밀번호가 맞는지 검사한 후,
+     * 통과가 되면 row의 값을 update합니다.
+     * @param id 수정할 id값
+     * @param dto
+     * @return
+     */
+    @Transactional
+    @Override
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto dto) {
+        //들어온 requestBody가 정상적인 형태가 맞는지 확인
+        if(dto.getPassword() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호 값이 유효하지 않습니다.");
+        }
+        // 0. 비밀번호가 NULL => BAD REQEUST
+        // 1. 내용이 NULL + 작성자 이름 바뀜 => 작성자, 업데이트 날짜만 수정
+        // 2. 내용이 바뀜 + 작성자 NULL => 내용, 업데이트 날짜만 수정
+        // 3. 둘 다 바뀜 => 내용, 작성자, 업데이트 날짜 수정
+        // 3. 둘다 NULL => BAD REQEUST
+        // 아니면 BAD REQUEST
+
+        Schedule responseSchedule = scheduleRepository.findScheduleById(id);
+        //비밀번호 꺼내서 비밀번호 확인함
+
+        if(dto.getPassword().equals(responseSchedule.getPassword())){
+            if( scheduleRepository.updateSchedule(id, dto.getThingTodo()) != 1){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 row를 찾지 못했어요/");
+            }else{
+                userManagementRepository.updateUserNameById(responseSchedule.getUserId(), dto.getUserName());
+            }
+
+        }else{
+            // 틀리면 BAD REQEUST
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.");
+        }
+
+
+
+        //다 있으면 비밀번호 꺼내서 비밀번호 확인함
+
+        // 틀리면 BAD REQEUST
+
+        //맞으면 레포지토리 일시킴. 받아오는 것:수정한 row개수
+        //0개면 id값이 잘못되었으니 Not Found
+        // 수정한 후에 , 수정된 값을 scheduleRepository.findScheduleById(id)으로 받아와서 스케줄 객체만듬
+
+        //return new ScheduleResponseDto(schedule);
+        return null;
+    }
+
     /**
      * 해당하는 일정을 삭제하는 함수입니다.
      * 주어진 id값과 password를 비교하고, 조건이 충족되면 해당 row를 찾아 삭제합니다.

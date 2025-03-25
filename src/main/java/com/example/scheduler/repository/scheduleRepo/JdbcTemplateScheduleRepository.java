@@ -135,12 +135,12 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
                     "불러오기 실패 : 입력값을 다시 확인해주세요.");
         }
     }
-//
-//    @Override
-//    public int updateSchedule(Long id, String thingTodo, String userName) {
-//        return 0;
-//    }
-//
+
+    @Override
+    public int updateSchedule(Long id, String thingTodo) {
+        return jdbcTemplate.update("UPDATE SCHEDULE SET SCHEDULE_CONTENT = ? WHERE SCHEDULE_ID = ?", thingTodo, id);
+    }
+
 
     /**
      * 주어진 id값에 맞는 row를 삭제하는 함수입니다.

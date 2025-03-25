@@ -12,7 +12,7 @@ public interface ScheduleRepository {
     ScheduleResponseDto saveSchedule(ScheduleRequestDto dto);
     List<ScheduleResponseDto> findAllSchedules(String userName, LocalDateTime updateDate);
 //
-//    int updateSchedule(Long id, String thingTodo, String userName);
+    int updateSchedule(Long id, String thingTodo);
     int deleteSchedule(Long id);
 //
 //    Schedule findScheduleByIdOrElseThrow(Long id);
