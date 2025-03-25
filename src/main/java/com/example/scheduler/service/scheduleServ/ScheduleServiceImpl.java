@@ -2,7 +2,6 @@ package com.example.scheduler.service.scheduleServ;
 
 import com.example.scheduler.dto.scheduleDto.ScheduleResponseDto;
 import com.example.scheduler.dto.scheduleDto.ScheduleRequestDto;
-import com.example.scheduler.dto.scheduleDto.ScheduleUpdateRequestDto;
 import com.example.scheduler.entity.Schedule;
 import com.example.scheduler.repository.scheduleRepo.ScheduleRepository;
 import com.example.scheduler.repository.userManagementRepo.UserManagementRepository;
@@ -14,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Annotation @Service는 명시적으로  Service Layer 라는것을 나타내며 비지니스 로직을 수행합니다.
@@ -105,50 +105,52 @@ public class ScheduleServiceImpl implements ScheduleService{
      * 그 다음 scheduleRepository.checkPassword을 통해 비밀번호가 맞는지 검사한 후,
      * 통과가 되면 row의 값을 update합니다.
      * @param id 수정할 id값
-     * @param dto
+     * @param updateBody 업데이트 할 맵 내용들
      * @return
      */
     @Transactional
     @Override
-    public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto dto) {
+    public ScheduleResponseDto updateSchedule(Long id, Map<String, String> updateBody) {
         //들어온 requestBody가 정상적인 형태가 맞는지 확인
-        if(dto.getPassword() == null){
+        if(updateBody.get("password") == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호 값이 유효하지 않습니다.");
         }
-        // 0. 비밀번호가 NULL => BAD REQEUST
-        // 1. 내용이 NULL + 작성자 이름 바뀜 => 작성자, 업데이트 날짜만 수정
-        // 2. 내용이 바뀜 + 작성자 NULL => 내용, 업데이트 날짜만 수정
-        // 3. 둘 다 바뀜 => 내용, 작성자, 업데이트 날짜 수정
+
         // 3. 둘다 NULL => BAD REQEUST
-        // 아니면 BAD REQUEST
+        if(updateBody.get("userName") == null && updateBody.get("thingTodo") == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "변경 값이 유효하지 않습니다.");
+        }
 
         Schedule responseSchedule = scheduleRepository.findScheduleById(id);
+        int updatedRow;
+
         //비밀번호 꺼내서 비밀번호 확인함
-
-        if(dto.getPassword().equals(responseSchedule.getPassword())){
-            if( scheduleRepository.updateSchedule(id, dto.getThingTodo()) != 1){
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 row를 찾지 못했어요/");
-            }else{
-                userManagementRepository.updateUserNameById(responseSchedule.getUserId(), dto.getUserName());
+        if(updateBody.get("password").equals(responseSchedule.getPassword())){
+            // 내용 + 갱신일 수정.......
+            if( updateBody.get("thingTodo") != null){
+                updatedRow = scheduleRepository.updateSchedule(id, updateBody.get("thingTodo"));
+                if( updatedRow != 1 ){
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 row를 찾지 못했어요/");
+                }
+                responseSchedule.setThingTodo(updateBody.get("thingTodo"));
             }
-
+            // 작성자 + 갱신일 수정
+            if( updateBody.get("userName") != null){
+                updatedRow = userManagementRepository.updateUserNameById(responseSchedule.getUserId(), updateBody.get("userName"));
+                //작성자 이름 변경
+                if( updatedRow != 1 ){
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 row를 찾지 못했어요/");
+                }
+            }
         }else{
             // 틀리면 BAD REQEUST
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 다릅니다.");
         }
 
+        ScheduleResponseDto responseDto = new ScheduleResponseDto(responseSchedule);
+        responseDto.setUserName(userManagementRepository.getUserNameById(responseSchedule.getUserId()));
 
-
-        //다 있으면 비밀번호 꺼내서 비밀번호 확인함
-
-        // 틀리면 BAD REQEUST
-
-        //맞으면 레포지토리 일시킴. 받아오는 것:수정한 row개수
-        //0개면 id값이 잘못되었으니 Not Found
-        // 수정한 후에 , 수정된 값을 scheduleRepository.findScheduleById(id)으로 받아와서 스케줄 객체만듬
-
-        //return new ScheduleResponseDto(schedule);
-        return null;
+        return responseDto;
     }
 
     /**

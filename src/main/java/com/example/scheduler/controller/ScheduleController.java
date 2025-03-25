@@ -2,7 +2,6 @@ package com.example.scheduler.controller;
 
 import com.example.scheduler.dto.scheduleDto.ScheduleRequestDto;
 import com.example.scheduler.dto.scheduleDto.ScheduleResponseDto;
-import com.example.scheduler.dto.scheduleDto.ScheduleUpdateRequestDto;
 import com.example.scheduler.service.scheduleServ.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,13 +74,14 @@ public class ScheduleController {
      * 수정할 수 있는 내용은 한정적입니다. 일정의 내용(thingTodo)과 작성자명(userName)만 유효한 수정값으로 받아들입니다.
      * 수정이 정상적으로 완료되면 수정날짜가 자동으로 갱신됩니다.
      * @param scheduleId
-     * @param dto
+     * @param updateBody
      * @return
      */
     @PutMapping("/{scheduleId}")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
-            @PathVariable Long scheduleId, @RequestBody ScheduleUpdateRequestDto dto){
-        return new ResponseEntity<>(scheduleService.updateSchedule(scheduleId, dto), HttpStatus.OK);
+            @PathVariable Long scheduleId,
+            @RequestBody Map<String, String> updateBody){
+        return new ResponseEntity<>(scheduleService.updateSchedule(scheduleId, updateBody), HttpStatus.OK);
     }
 
 

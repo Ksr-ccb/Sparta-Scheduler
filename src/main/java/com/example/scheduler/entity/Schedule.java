@@ -2,6 +2,7 @@ package com.example.scheduler.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 public class Schedule {
 
     private Long scheduleId;
+
+    @Setter
     private String thingTodo;
     private String password;
 

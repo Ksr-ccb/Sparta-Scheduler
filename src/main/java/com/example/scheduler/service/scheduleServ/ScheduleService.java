@@ -2,9 +2,9 @@ package com.example.scheduler.service.scheduleServ;
 
 import com.example.scheduler.dto.scheduleDto.ScheduleResponseDto;
 import com.example.scheduler.dto.scheduleDto.ScheduleRequestDto;
-import com.example.scheduler.dto.scheduleDto.ScheduleUpdateRequestDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ScheduleService {
 
@@ -12,7 +12,7 @@ public interface ScheduleService {
     List<ScheduleResponseDto> finaAllSchedules(String userName, String updateDate);
 
     ScheduleResponseDto findScheduleById(Long id);
-    ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto dto);
+    ScheduleResponseDto updateSchedule(Long id, Map<String, String> updateBody);
 //
     void deleteSchedule(Long id, String password);
 }
