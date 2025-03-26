@@ -41,10 +41,11 @@ public class ScheduleServiceImpl implements ScheduleService{
     /**
      * [service] 새로운 스케줄을 만드는 기능을 하는 함수입니다.
      * 입력받은 dto의 값을 확인하고,
-     * 조건을 만족하면 {@link Schedule}객체를 생성하고
-     * scheduleRepository.saveSchedule 의 매개변수로 넘겨준다..
-     * @param dto
-     * @return
+     * 조건을 만족하면 {@see Schedule}객체를 생성하고
+     * {@code scheduleRepository.saveSchedule}  의 매개변수로 넘겨준다..
+     * @param dto 스케줄 추가에 필요한 값을 {@see ScheduleRequestDto}형태로 받아옵니다.
+     * @return 삽입이 성공적으로 완료되었다면 완료된 행의 값을 반환합니다.
+     * @throws ResponseStatusException 입력값이 잘못되었을 때 BAD_REQUEST 를 반환합니다.
      */
     @Transactional
     @Override
@@ -73,7 +74,9 @@ public class ScheduleServiceImpl implements ScheduleService{
      * [service] 스케줄 리스트를 반환하는 함수입니다.
      * @param userName 특정 작성자의 이름값(동명이인도 모두 탐색)
      * @param updateDate 최종 수정된 날짜
-     * @return
+     * @return 해당되는 모든 일정들의 값을 {@see ScheduleResponseDto}리스트 형태로 반환합니다.
+     * @throws ResponseStatusException 입력받은 사용자의 이름이 없으면 NOT_FOUND
+     *                                 날짜 형식이 올바르지 않으면 BAD_REQUEST 반환
      */
     @Override
     public List<ScheduleResponseDto> finaAllSchedules(String userName, String updateDate) {
@@ -106,6 +109,7 @@ public class ScheduleServiceImpl implements ScheduleService{
      * @param pageNum 페이지 넘버
      * @param pageSize 페이지 사이즈
      * @return 리스트가 비었다면 204으로 반환하고, 내용이 있으면 해당 리스트를 추가합니다.
+     * @throws ResponseStatusException 번호와 사이즈 값이 올바르지 않으면 BAD_REQUEST 반환
      */
     @Override
     public List<ScheduleResponseDto> findAllScheduleByPages(Long pageNum, Long pageSize) {
@@ -126,7 +130,7 @@ public class ScheduleServiceImpl implements ScheduleService{
      * 매개변수로 받은 id값이 테이블에 잇는지 확인하고
      * 있다면 해당 row만 읽어와서 MemoResponseDto으로 반환하는 함수입니다.
      * @param id 찾아야 할 id값
-     * @return
+     * @return id에 맞는 row가 있다면 {@see ScheduleResponseDto} 형태로 반환
      */
     @Transactional
     @Override
@@ -147,7 +151,9 @@ public class ScheduleServiceImpl implements ScheduleService{
      * 통과가 되면 row의 값을 update합니다.
      * @param id 수정할 id값
      * @param updateBody 업데이트 할 맵 내용들
-     * @return
+     * @return 업데이트가 정상적으로 완료되었으면 업데이트 한 row 반환
+     * @throws ResponseStatusException 수정할 대상을 못 찾으면 NOT_FOUND
+     *                                 들어온 비밀번호가 틀리거나 값이 없으면 BAD_REQUEST
      */
     @Transactional
     @Override
@@ -199,6 +205,8 @@ public class ScheduleServiceImpl implements ScheduleService{
      * 주어진 id값과 password를 비교하고, 조건이 충족되면 해당 row를 찾아 삭제합니다.
      * @param id 삭제할 id값
      * @param password 해당 id에 있는 password랑 비교해야함. (같아야 삭제가능)
+     * @throws ResponseStatusException 비밀번호가 없거나 틀리면 BAD_REQUEST
+     *                                 삭제할 id 값을 못 찾으면 NOT_FOUND
      */
     @Transactional
     @Override

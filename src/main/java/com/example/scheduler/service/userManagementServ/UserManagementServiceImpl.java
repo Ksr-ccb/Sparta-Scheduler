@@ -43,6 +43,10 @@ public class UserManagementServiceImpl implements UserManagementService{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email format.");
         }
 
+        if( userManagementRepository.checkForDuplicate(userName, email) != 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 등록된 회원정보가 있습니다.");
+        }
+
         return userManagementRepository.registerUser(new User(userName,email));
     }
 }

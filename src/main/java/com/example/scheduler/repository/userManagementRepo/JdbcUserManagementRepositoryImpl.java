@@ -63,7 +63,8 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
     /**
      * 특정 id값에 맞는 사용자 row 한줄을 불러오는 함수입니다.
      * @param id 해당 id값은 PK 이므로 테이블에 단 하나가 존재합니다.
-     * @return id에 맞는 row가 있으면 해당 row를 UserResponseDto 형태로 반환하고 그렇지 않으면 HttpStatus.NOT_FOUND를 반환합니다.
+     * @return id에 맞는 row가 있으면 해당 row를 UserResponseDto 형태로 반환합니다.
+     * @throws ResponseStatusException 결과로 나온 row가 없다면 404를 반환합니다.
      */
     private UserResponseDto findUserById(Long id){
         String sql = "SELECT * FROM user WHERE USER_ID = ?";
@@ -87,6 +88,7 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
      * 동명이인을 포함하여 이름이 같은 사용자의 수를 반환합니다.
      * @param userName 탐색대상이 되는 이름입니다.
      * @return 해당 이름을 가진 사람의 수를 반환합니다.
+     * @throws ResponseStatusException 결과로 나온 row가 없다면 404를 반환합니다.
      */
     @Override
     public int findUsersByName(String userName){
@@ -96,14 +98,36 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
             int countUser = jdbcTemplate.queryForObject(sql, Integer.class, userName);
             return countUser;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, userName + " 의 기록을 찾을 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    " 사용자 정보 검색 중 오류가 발생 했습니다.  " + e.getMessage());
         }
     }
 
     /**
+     * 이미 똑같은 정보로 등록이 되어있는지 확인하는 함수입니다.
+     * @param userName 탐색대상이 되는 이름입니다.
+     * @param email 가입시 기재하는 이메일 정보입니다.
+     * @return 해당 이름을 가진 사람의 수를 반환합니다.
+     * @throws ResponseStatusException 결과로 나온 row가 없다면 404를 반환합니다.
+     */
+    @Override
+    public int checkForDuplicate (String userName, String email){
+        String sql = "SELECT COUNT(*) FROM USER WHERE USER_NAME = ? AND EMAIL = ?";
+
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, userName, email);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "중복 체크 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+
+    /**
      * 특정 id값에 맞는 사용자 "이름"을 반환해주는 함수입니다.
      * @param id 해당 id 값은 PK 이므로 테이블에 단 하나가 존재합니다.
-     * @return  id에 맞는 row가 있으면 거기서 이름값만 가져와 String 형태로 반환하고 그렇지 않으면 HttpStatus.NOT_FOUND를 반환합니다.
+     * @return  id에 맞는 row가 있으면 거기서 이름값만 가져와 String 형태로 반환합니다.
+     * @throws ResponseStatusException 결과로 나온 row가 없다면 404를 반환합니다.
      */
     @Override
     public String getUserNameById(Long id){
@@ -114,7 +138,8 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
             assert name != null;
             return name.getUserName();
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = "+id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "해당 아이디 값이 존재하지 않습니다.  id = "+id);
         }
     }
 

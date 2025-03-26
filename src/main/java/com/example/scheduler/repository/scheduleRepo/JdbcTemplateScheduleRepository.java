@@ -68,6 +68,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * 특정 id값에 맞는 스케줄 row 한줄을 불러오는 함수입니다.
      * @param id 해당 id값은 PK 이므로 테이블에 단 하나가 존재합니다.
      * @return id에 맞는 row가 있으면 해당 row를 ScheduleResponseDto형태로 반환하고 그렇지 않으면 HttpStatus.NOT_FOUND를 반환합니다.
+     * @throws ResponseStatusException 결과로 나온 row가 없다면 404를 반환합니다.
      */
     @Override
     public Schedule findScheduleById(Long id){
@@ -96,7 +97,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * @param userName 탐색하고싶은 작성자의 이름입니다.
      * @param updateDate 최종적으로 수정된 할일의 날짜를 필터링합니다. 해당 날짜에 최종 수정된 할일만 남깁니다.
      * @return 조건이 있을수도 없을수도 있는데, 경우에 맞게 출력할 row가 있다면 List<ScheduleResponseDto> 형태로 출력합니다.
-     * 만약 결과로 나온 row가 하나도없다면 NOT_FOUND 를 반환합니다.
+     * @throws ResponseStatusException 결과로 나온 row가 하나도없거나 SQL 문 처리과정에서 오류가 생기면 404를 반환합니다.
      */
     @Override
     public List<ScheduleResponseDto> findAllSchedules(String userName, LocalDate updateDate) {
@@ -145,6 +146,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * @param pageSize 페이지 사이즈
      * @return 경우에 맞게 List<ScheduleResponseDto> 형태로 출력합니다.
      * 만약 결과로 나온 row가 하나도없다면 빈 리스트를 반환합니다.
+     * @throws ResponseStatusException SQL 문 처리과정에서 오류가 생기면 404를 반환합니다.
      */
     @Override
     public List<ScheduleResponseDto> findAllScheduleByPages(Long pageNum, Long pageSize) {

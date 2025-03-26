@@ -11,4 +11,5 @@ public interface UserManagementRepository {
     String getUserNameById(Long id);
     int updateUserNameById(Long id, String userName);
     int findUsersByName(String userName);
+    int checkForDuplicate (String userName, String email);
 }
