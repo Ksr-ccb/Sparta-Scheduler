@@ -102,6 +102,26 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     /**
+     * 모든 스케줄을 페이지 별로 읽어옵니다.
+     * @param pageNum 페이지 넘버
+     * @param pageSize 페이지 사이즈
+     * @return 리스트가 비었다면 204으로 반환하고, 내용이 있으면 해당 리스트를 추가합니다.
+     */
+    @Override
+    public List<ScheduleResponseDto> findAllScheduleByPages(Long pageNum, Long pageSize) {
+        if(pageNum == null || pageSize == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "페이지 번호와 사이즈 값을 확인해주세요");
+        }
+
+        List<ScheduleResponseDto> schedules = scheduleRepository.findAllScheduleByPages((pageNum-1)*pageSize, pageSize);
+
+        if(schedules.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "해당 페이지에 데이터가 없습니다");
+        }
+        return schedules;
+    }
+
+    /**
      * [service] id값에 맞는 데이터 하나를 반환하는 함수입니다.
      * 매개변수로 받은 id값이 테이블에 잇는지 확인하고
      * 있다면 해당 row만 읽어와서 MemoResponseDto으로 반환하는 함수입니다.

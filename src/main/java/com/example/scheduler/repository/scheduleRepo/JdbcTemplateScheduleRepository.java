@@ -140,6 +140,30 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     }
 
     /**
+     * 모든 스케줄을 페이지 별로 읽어옵니다.
+     * @param pageNum 페이지 넘버
+     * @param pageSize 페이지 사이즈
+     * @return 경우에 맞게 List<ScheduleResponseDto> 형태로 출력합니다.
+     * 만약 결과로 나온 row가 하나도없다면 빈 리스트를 반환합니다.
+     */
+    @Override
+    public List<ScheduleResponseDto> findAllScheduleByPages(Long pageNum, Long pageSize) {
+        String sql = "SELECT SCHEDULE_ID, SCHEDULE_CONTENT, USER_NAME, CREATE_DATE, S.UPDATE_DATE " +
+                "FROM SCHEDULE AS S " +
+                "JOIN USER AS U " +
+                "ON S.USER_ID = U.USER_ID " +
+                "ORDER BY SCHEDULE_ID LIMIT ?, ?";
+
+        try{
+            List<ScheduleResponseDto> result = jdbcTemplate.query(sql, new Long[]{pageNum, pageSize}, scheduleDtoRowMapper());
+            return result;
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "불러오기 실패 : 입력값을 다시 확인해주세요." + e.getMessage());
+        }
+    }
+
+    /**
      * 할 일의 내용을 변경합니다.
      * @param id 스케줄 아이디 값입니다.
      * @param thingTodo 바꿀 할일의 내용입니다.

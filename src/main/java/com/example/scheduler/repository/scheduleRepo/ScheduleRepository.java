@@ -12,6 +12,7 @@ public interface ScheduleRepository {
 
     ScheduleResponseDto saveSchedule(ScheduleRequestDto dto);
     List<ScheduleResponseDto> findAllSchedules(String userName, LocalDate updateDate);
+    List<ScheduleResponseDto> findAllScheduleByPages(Long pageNum, Long pageSize);
 //
     int updateSchedule(Long id, String thingTodo);
     int deleteSchedule(Long id);

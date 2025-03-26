@@ -59,6 +59,21 @@ public class ScheduleController {
     }
 
     /**
+     * 모든 스케줄을 페이지 별로 읽어옵니다.
+     * @param pageNum 페이지 넘버
+     * @param pageSize 페이지 사이즈
+     * @return
+     */
+    @GetMapping("/pages/{pageNum}")
+    public ResponseEntity<List<ScheduleResponseDto>> findAllScheduleByPages(
+            @PathVariable Long pageNum,
+            @RequestParam(required = false, defaultValue = "10") Long pageSize){
+
+        return new ResponseEntity<>(scheduleService.findAllScheduleByPages(pageNum, pageSize), HttpStatus.OK);
+    }
+
+
+    /**
      * 아이디값에 맞는 스케줄 row 한줄을 불러오는 함수입니다.
      * @param scheduleId 원하는 row의 아이디 값
      * @return row를 출력

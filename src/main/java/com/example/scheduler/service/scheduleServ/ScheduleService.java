@@ -10,7 +10,7 @@ public interface ScheduleService {
 
     ScheduleResponseDto saveSchedule(ScheduleRequestDto dto);
     List<ScheduleResponseDto> finaAllSchedules(String userName, String updateDate);
-
+    List<ScheduleResponseDto> findAllScheduleByPages(Long pageNum, Long pageSize);
     ScheduleResponseDto findScheduleById(Long id);
     ScheduleResponseDto updateSchedule(Long id, Map<String, String> updateBody);
 //
