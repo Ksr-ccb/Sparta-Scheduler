@@ -11,8 +11,9 @@
 
   ### 출력
   - 기능에 알맞는 Json 출력값들
-  - 200 번대 : 성공
-  - 400 번대 : 입력값 오류로 인한 실패
+  - HTTP Status Code
+      - 200 번대 : 200(+반환 JSON) , 201(+ 반환 JSON) , 204( 반환값 x )
+      - 400 번대 : 400(변수는 왔는데 값 형태가 이상하거나 비밀번호 틀렸을 때), 404(id값들이 잘못됐을 때)
 
   ### 기능
   - 할 일 등록
@@ -70,3 +71,55 @@
 
 
 
+---
+  # 깃 컨벤션 
+참고 :   https://treasurebear.tistory.com/70
+
+
+🎨::
+코드의 구조/형태 개선
+Improve structure / format of the code.
+
+⚡️::
+성능 개선
+Improve performance.
+
+🔥::
+코드/파일 삭제
+Remove code or files.
+
+🐛::
+버그 수정
+Fix a bug.
+
+✨::
+새 기능
+Introduce new features.
+
+📝::
+문서 추가/수정
+Add or update documentation.
+
+💄::
+UI/스타일 파일 추가/수정
+Add or update the UI and style files.
+
+♻️::
+코드 리팩토링
+Refactor code.
+
+➕::
+의존성 추가
+Add a dependency.
+
+➖::
+의존성 제거
+Remove a dependency.
+
+🔨::
+개발 스크립트 추가/수정
+Add or update development scripts.
+
+💡::
+주석 추가/수정
+Add or update comments in source code.
