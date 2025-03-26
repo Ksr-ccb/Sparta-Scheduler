@@ -113,7 +113,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             parameters.add(userName);
 
             if(updateDate != null){
-                sql += "AND UPDATE_DATE = ? ";
+                sql += "AND DATE(S.UPDATE_DATE) = ? ";
                 parameters.add(updateDate);
             }
         }else {//이름X, 날짜 O/X
@@ -135,7 +135,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             return result;
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "불러오기 실패 : 입력값을 다시 확인해주세요." + updateDate);
+                    "불러오기 실패 : 입력값을 다시 확인해주세요." + e.getMessage());
         }
     }
 

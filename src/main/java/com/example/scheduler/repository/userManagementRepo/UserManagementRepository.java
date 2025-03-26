@@ -10,5 +10,5 @@ public interface UserManagementRepository {
     UserResponseDto registerUser(User user);
     String getUserNameById(Long id);
     int updateUserNameById(Long id, String userName);
-    List<String> findUsersByName(String userName);
+    int findUsersByName(String userName);
 }

@@ -84,27 +84,20 @@ public class JdbcUserManagementRepositoryImpl implements UserManagementRepositor
     }
 
     /**
-     * 동명이인을 포함하여 이름이 같은 사용자들을 반환합니다.
+     * 동명이인을 포함하여 이름이 같은 사용자의 수를 반환합니다.
      * @param userName 탐색대상이 되는 이름입니다.
-     * @return 이름값들의 리스트를 반환합니다.
+     * @return 해당 이름을 가진 사람의 수를 반환합니다.
      */
     @Override
-    public List<String> findUsersByName(String userName){
-        String sql = "SELECT * FROM user WHERE USER_NAME = ?";
+    public int findUsersByName(String userName){
+        String sql = "SELECT COUNT(*) FROM USER WHERE USER_NAME = ?";
 
-        try{
-            List<String> result = jdbcTemplate.query(sql, new String[]{userName}, namesRowMapper());
-
-            if(result.isEmpty()){
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당되는 컬럼이 없습니다. ");
-            }
-
-            return result;
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "불러오기 실패 : 입력값을 다시 확인해주세요.");
+        try {
+            int countUser = jdbcTemplate.queryForObject(sql, Integer.class, userName);
+            return countUser;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, userName + " 의 기록을 찾을 수 없습니다.");
         }
-
     }
 
     /**

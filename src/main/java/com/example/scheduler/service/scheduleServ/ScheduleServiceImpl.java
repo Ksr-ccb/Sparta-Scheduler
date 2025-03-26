@@ -54,6 +54,14 @@ public class ScheduleServiceImpl implements ScheduleService{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There are no essential values.");
         }//없으면 바로 BAD REQUEST
 
+        try{
+            //존재하는 userId값이 있어야 함.
+            userManagementRepository.getUserNameById(dto.getUserId());
+        }catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자 id값이 올바르지 않습니다.");
+        }
+
+
         //객체 수정 완료 후에 INSERT 날림
         ScheduleResponseDto responseDto = scheduleRepository.saveSchedule(dto);
         responseDto.setUserName(userManagementRepository.getUserNameById(dto.getUserId()));
@@ -72,10 +80,14 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         LocalDate date = null;
 
-        if(updateDate != null){
+        if(userManagementRepository.findUsersByName(userName) == 0){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, userName + " 의 기록을 찾을 수 없습니다.");
+        }
 
-            if (!updateDate.matches("\\d{4}-\\d{2}-\\d{2}")) { // "yyyy-MM-dd" 형식에 부합하는지 확인
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이메일 형식이 아닙니다.");
+        if(updateDate != null){
+            // "yyyy-MM-dd" 형식으로 날짜 넣었는지 확인
+            if (!updateDate.matches("\\d{4}-\\d{2}-\\d{2}")) { 
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색 날짜 형식이 올바르지 않습니다.");
             }
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
