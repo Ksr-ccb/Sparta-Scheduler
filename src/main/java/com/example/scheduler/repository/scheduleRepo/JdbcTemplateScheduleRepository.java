@@ -97,7 +97,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * @param userName 탐색하고싶은 작성자의 이름입니다.
      * @param updateDate 최종적으로 수정된 할일의 날짜를 필터링합니다. 해당 날짜에 최종 수정된 할일만 남깁니다.
      * @return 조건이 있을수도 없을수도 있는데, 경우에 맞게 출력할 row가 있다면 List<ScheduleResponseDto> 형태로 출력합니다.
-     * @throws ResponseStatusException 결과로 나온 row가 하나도없거나 SQL 문 처리과정에서 오류가 생기면 404를 반환합니다.
+     * @throws ResponseStatusException 결과로 나온 row가 하나도없거나 SQL 문 처리과정에서 오류가 생기면 500을 반환합니다.
      */
     @Override
     public List<ScheduleResponseDto> findAllSchedules(String userName, LocalDate updateDate) {
@@ -124,7 +124,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             }
         }
 
-        sql += "ORDER BY S.UPDATE_DATE";
+        sql += "ORDER BY S.UPDATE_DATE DESC";
 
         try{
             List<ScheduleResponseDto> result = jdbcTemplate.query(sql, parameters.toArray(), scheduleDtoRowMapper());
@@ -135,7 +135,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
             return result;
         }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "불러오기 실패 : 입력값을 다시 확인해주세요." + e.getMessage());
         }
     }
@@ -160,7 +160,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
             List<ScheduleResponseDto> result = jdbcTemplate.query(sql, new Long[]{pageNum, pageSize}, scheduleDtoRowMapper());
             return result;
         }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "불러오기 실패 : 입력값을 다시 확인해주세요." + e.getMessage());
         }
     }
